@@ -1,0 +1,8 @@
+#!/usr/bin/ruby
+require 'garfio'
+
+hook = Garfio::Hook.new
+hook.exec do
+  lint('ruby -c', '*.rb')
+  lint('rubocop --lint --no-color --format o', '*.rb')
+end
