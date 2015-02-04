@@ -4,10 +4,13 @@ module Garfio
   include Utils
   module Git
     def changed_files
-      load_rugged
       @changed_files ||= begin
-        data = run('git diff --cached --name-only --diff-filter=AM HEAD', true)
-        data.split("\n").map(&:chomp)
+        if load_rugged
+          Rugged::Repository.new(Dir.pwd).index.map { |f| f[:path] }
+        else
+          data = run('git diff --cached --name-only --diff-filter=AM HEAD', true)
+          data.split("\n").map(&:chomp)
+        end
       end
     end
 
