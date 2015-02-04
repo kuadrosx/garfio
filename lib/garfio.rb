@@ -1,2 +1,2 @@
 
-
+require 'garfio/hook'
