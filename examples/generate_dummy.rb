@@ -3,6 +3,13 @@ $:.unshift File.expand_path('../../lib', __FILE__)
 require 'garfio'
 require 'fileutils'
 
+def cleanup
+  %w(dummy dummy_copy dummy_bare dummy_working_directory).each do |dir|
+    FileUtils.rm_r("/tmp/#{dir}") if File.exist? "/tmp/#{dir}"
+  end
+end
+
+cleanup
 FileUtils.mkdir_p('/tmp/dummy')
 
 begin
@@ -61,11 +68,17 @@ begin
     system('git remote add deploy /tmp/dummy_bare > /dev/null')
     system('git push deploy master > /dev/null')
 
+    File.open('/tmp/dummy/dummy.rb', 'w+') do |f|
+      f << 'print ":|"'
+    end
+
+    system("git commit -am 'with post-receive' > /dev/null")
+
+    system('git push deploy master > /dev/null')
+
     system('git checkout -b copy > /dev/null')
     system('git push deploy copy > /dev/null')
   end
 ensure
-  FileUtils.rm_r('/tmp/dummy')
-  FileUtils.rm_r('/tmp/dummy_copy')
-  FileUtils.rm_r('/tmp/dummy_bare')
+  cleanup
 end

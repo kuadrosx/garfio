@@ -5,5 +5,7 @@ print "post-commit\n"
 
 hook = Garfio::Hook.new
 hook.exec do
-  git.sync_with('/tmp/dummy_copy', 'test')
+  run_if('dummy.rb') do
+    run "ls"
+  end
 end

@@ -4,6 +4,11 @@ require 'garfio'
 print "post-receive\n"
 
 hook = Garfio::Hook.new
+hook.working_dir = '/tmp/dummy_working_directory'
+hook.working_branch = 'master'
 hook.exec do
-  git.sync_with('/tmp/dummy_working_directory', 'master')
+  run_if('dummy.rb') do
+    run 'pwd'
+    run 'cat dummy.rb'
+  end
 end

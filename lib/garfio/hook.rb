@@ -7,6 +7,9 @@ module Garfio
   class Hook
     include Utils
 
+    attr_writer :working_dir
+    attr_writer :working_branch
+
     def initialize
       @linters = []
       @runners = []
@@ -33,6 +36,7 @@ module Garfio
     end
 
     def exec(&block)
+      return false if working_dir_required
       instance_exec(&block) if block_given?
       git.changed_files.each do |file|
         @linters.each do |lint|
@@ -59,6 +63,21 @@ module Garfio
       require 'rugged'
     rescue LoadError
       print "install rugged gem to improve performance\n"
+    end
+
+    private
+
+    def working_dir_required
+      if @working_dir
+        return true unless git.sync_with(@working_dir, @working_branch)
+        Dir.chdir(@working_dir)
+      elsif git.bare?
+        out = 'This is a repository bare,'
+        out << 'You have to define a working directory'
+        print_error(out)
+        return true
+      end
+      false
     end
   end
 end
