@@ -17,19 +17,19 @@ module Garfio
     end
 
     def print_info(msg)
-      print "\033[01;34m#{msg}\e[0m"
+      print "\033[01;34m#{msg}\e[0m\n"
     end
 
     def print_success(msg)
-      print "\e[1m\e[32m#{msg}\e[0m"
+      print "\e[1m\e[32m#{msg}\e[0m\n"
     end
 
     def print_error(msg)
-      print "\e[1m\e[31m#{msg}\e[0m"
+      print "\e[1m\e[31m#{msg}\e[0m\n"
     end
 
     def print_warn(msg)
-      print "\e[1m\e[33m#{msg}\e[0m"
+      print "\e[1m\e[33m#{msg}\e[0m\n"
     end
   end
 end

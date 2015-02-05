@@ -15,7 +15,7 @@ module Garfio
     def lint(cmd, pattern, desc = nil)
       @linters << lambda do |file|
         if File.fnmatch(pattern, file)
-          print_info("running #{desc || cmd} over #{file}\n")
+          print_info("running #{desc || cmd} over #{file}")
           run("#{cmd} #{file}")
         end
         false
@@ -24,7 +24,6 @@ module Garfio
 
     def run_if(pattern, &block)
       @runners << lambda do |file|
-        p File.fnmatch(pattern, file)
         if File.fnmatch(pattern, file)
           instance_exec(file, &block)
           return true
