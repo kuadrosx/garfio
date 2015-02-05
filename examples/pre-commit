@@ -1,6 +1,8 @@
 #!/usr/bin/ruby
 require 'garfio'
 
+print "pre-commit\n"
+
 hook = Garfio::Hook.new
 hook.exec do
   lint('ruby -c', '*.rb')

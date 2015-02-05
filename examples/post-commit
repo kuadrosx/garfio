@@ -1,0 +1,9 @@
+#!/usr/bin/ruby
+require 'garfio'
+
+print "post-commit\n"
+
+hook = Garfio::Hook.new
+hook.exec do
+  git.sync_with('/tmp/dummy_copy', 'test')
+end
