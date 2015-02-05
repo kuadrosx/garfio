@@ -1,10 +1,11 @@
 
 require 'garfio/git'
+require 'garfio/git/rugged'
+require 'garfio/git/bash'
 
 module Garfio
   class Hook
     include Utils
-    include Git
 
     def initialize
       @linters = []
@@ -34,7 +35,7 @@ module Garfio
 
     def exec(&block)
       instance_exec(&block) if block_given?
-      changed_files.each do |file|
+      git.changed_files.each do |file|
         @linters.each do |lint|
           instance_exec(file, &lint)
         end
@@ -43,6 +44,22 @@ module Garfio
           next if instance_exec(file, &runner)
         end
       end
+    end
+
+    def git
+      @git ||= begin
+        if load_rugged
+          Rugged.new
+        else
+          Bash.new
+        end
+      end
+    end
+
+    def load_rugged
+      require 'rugged'
+    rescue LoadError
+      print "install rugged gem to improve performance\n"
     end
   end
 end
