@@ -1,6 +1,52 @@
 = garfio
 
-Gem to help write and reuse git-hooks
+Gem to help write git-hooks focused in automate deployment tasks and committing-workflow hooks
+
+== Usage
+
+  gem install garfio
+
+==== Automate deployment
+Paste the following code to your post-receive hook(.git/hooks/post-receive)
+
+  #!/usr/bin/ruby
+  require 'garfio'
+
+  hook = Garfio::Hook.new
+  # select the path where deployed code will live
+  # this is mandatory for bare repositories
+  hook.working_dir = '~/backend' 
+  # select your stable branch
+  hook.working_branch = 'master' 
+  hook.exec do
+    watch('Gemfile') do
+      run 'bundle install'
+    end
+
+    watch('bower.json') do
+      run 'bower install'
+    end
+
+    watch('app/assets/**/*') do
+      run 'rake assets:precompile'
+    end
+  end
+
+==== Check code
+Paste the following code to your pre-commit hook(.git/hooks/pre-commit)
+
+  #!/usr/bin/ruby
+  require 'garfio'
+
+  print "post-receive\n"
+
+  hook = Garfio::Hook.new
+  hook.exec do
+    lint('ruby -c', '*.rb')
+    lint('jshint', '*.js')
+    lint('haml --check , '*.haml')
+    lint('sass --check , '*.scss')
+  end
 
 == Contributing to garfio
 
