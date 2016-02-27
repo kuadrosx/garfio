@@ -15,19 +15,19 @@ Paste the following code to your post-receive hook(.git/hooks/post-receive)
   hook = Garfio::Hook.new
   # select the path where deployed code will live
   # this is mandatory for bare repositories
-  hook.working_dir = '~/backend' 
+  hook.working_dir = '~/backend'
   # select your stable branch
-  hook.working_branch = 'master' 
+  hook.working_branch = 'master'
   hook.exec do
-    watch('Gemfile') do
+    run_if('Gemfile') do
       run 'bundle install'
     end
 
-    watch('bower.json') do
+    run_if('bower.json') do
       run 'bower install'
     end
 
-    watch('app/assets/**/*') do
+    run_if('app/assets/**/*') do
       run 'rake assets:precompile'
     end
   end
@@ -62,4 +62,3 @@ Paste the following code to your pre-commit hook(.git/hooks/pre-commit)
 
 Copyright (c) 2015 Jorge Cuadrado. See LICENSE.txt for
 further details.
-
